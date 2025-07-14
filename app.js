@@ -4,8 +4,10 @@ let btns = ["red", "green", "yellow", "blue"];
 let started = false;
 let level = 0;
 let highScore = localStorage.getItem("highScore") || 0;
-let h2 = document.querySelector("h2");
 
+const h2 = document.querySelector("h2");
+
+// Start only via keyboard
 document.addEventListener("keydown", startGame);
 
 function startGame() {
@@ -22,10 +24,10 @@ function levelup() {
 
   let randIdx = Math.floor(Math.random() * 4);
   let randColor = btns[randIdx];
-  let randBtn = document.querySelector(`#${randColor}`);
+  let randBtn = document.getElementById(randColor);
   gameSeq.push(randColor);
 
-  setTimeout(() => btnFlash(randBtn), 300);
+  setTimeout(() => btnFlash(randBtn), 500);
 }
 
 function btnFlash(btn) {
@@ -44,7 +46,8 @@ function checkAns(idx) {
       localStorage.setItem("highScore", highScore);
     }
 
-    h2.innerHTML = `Game Over!<br>Your score: <b>${level}</b><br>High Score: <b>${highScore}</b><br>Press any key to restart`;
+    h2.innerHTML = `Game Over!<br>Your Score: <b>${level}</b><br>High Score: <b>${highScore}</b><br>Press any key to restart`;
+
     document.body.classList.add("game-over");
     setTimeout(() => document.body.classList.remove("game-over"), 200);
     reset();
@@ -52,28 +55,31 @@ function checkAns(idx) {
 }
 
 function btnPress() {
+  if (!started) return;
+
   let btn = this;
-  btnFlash(btn);
   let userColor = btn.getAttribute("id");
+
   userSeq.push(userColor);
+  btnFlash(btn);
   checkAns(userSeq.length - 1);
 }
 
 function reset() {
   started = false;
+  level = 0;
   gameSeq = [];
   userSeq = [];
-  level = 0;
 }
 
-let allBtns = document.querySelectorAll(".btn");
-for (let btn of allBtns) {
+// Add click listeners to all buttons
+document.querySelectorAll(".btn").forEach(btn => {
   btn.addEventListener("click", btnPress);
-}
+});
 
-// Optional: prevent double-tap zoom on mobile
+// Optional: Prevent double-tap zoom
 let lastTouch = 0;
-document.addEventListener('touchstart', function (e) {
+document.addEventListener("touchstart", function (e) {
   const now = new Date().getTime();
   if (now - lastTouch <= 300) {
     e.preventDefault();
