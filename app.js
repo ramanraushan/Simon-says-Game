@@ -42,7 +42,7 @@ function levelup(){
     if (i >= gameSeq.length) {
       clearInterval(interval);
     }
-  }, 250); // 600ms between flashes (adjust as needed)
+  }, 350); // 350ms between flashes (adjust as needed)
 
    
  function btnFlash(btn) {
