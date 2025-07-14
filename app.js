@@ -71,3 +71,12 @@ function reset(){
     userSeq=[];
     level=0;
 }
+let lastTouch = 0;
+
+document.addEventListener('touchstart', function (e) {
+  const now = new Date().getTime();
+  if (now - lastTouch <= 300) {
+    e.preventDefault(); // prevent double-tap zoom
+  }
+  lastTouch = now;
+}, { passive: false });
