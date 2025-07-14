@@ -33,8 +33,22 @@ function levelup(){
     let randBtn=document.querySelector(`.${randColor}`);
     
     gameSeq.push(randColor)
+    let i=0;
+     const interval = setInterval(() => {
+    const color = gameSeq[i];
+    const btn = document.getElementById(color);
+    btnFlash(btn);
+    i++;
+    if (i >= gameSeq.length) {
+      clearInterval(interval);
+    }
+  }, 250); // 600ms between flashes (adjust as needed)
+
    
-    btnFlash(randBtn);
+ function btnFlash(btn) {
+  btn.classList.add("flash");
+  setTimeout(() => btn.classList.remove("flash"), 250);
+}
     
     
 }
