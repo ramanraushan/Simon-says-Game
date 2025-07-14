@@ -6,14 +6,18 @@ let btns=["red","green","yellow","blue"];
 let started=false;
 let level = 0;
 let h2=document.querySelector("h2")
-document.addEventListener("keypress",function(){
+document.addEventListener("keypress",startGame);
+document.addEventListener("touchstart",startGame);
+document.addEventListener("click",startGame);
+    
+    function startGame(){
     if(started==false){
         console.log("game is started");
      started=true;
      levelup();
     }
     
-});
+};
 function btnFlash(btn){
     btn.classList.add("flash");
     setTimeout(function(){
