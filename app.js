@@ -1,96 +1,118 @@
-let gameSeq=[];
-let userSeq=[];
-let highScore = 0;
-
-let btns=["red","green","yellow","blue"];
-let started=false;
+// Game data
+let gameSeq = [];
+let userSeq = [];
+let btns = ["red", "green", "yellow", "blue"];
+let started = false;
 let level = 0;
-let h2=document.querySelector("h2")
-document.addEventListener("keypress",startGame);
-document.addEventListener("touchstart",startGame);
-document.addEventListener("click",startGame);
-    
-    function startGame(){
-    if(started==false){
-        console.log("game is started");
-     started=true;
-     levelup();
-    }
-    
+
+// Select elements
+const h2 = document.querySelector("h2");
+
+// Preload all sounds
+const sounds = {
+  red: new Audio("sounds/red.wav"),
+  green: new Audio("sounds/green.wav"),
+  yellow: new Audio("sounds/yellow.wav"),
+  blue: new Audio("sounds/blue.wav"),
+  wrong: new Audio("sounds/wrong.wav")
 };
-function btnFlash(btn){
-    btn.classList.add("flash");
-    setTimeout(function(){
-        btn.classList.remove("flash");
-    },250);
+
+// Play a sound by color
+function playSound(color) {
+  if (sounds[color]) {
+    sounds[color].currentTime = 0;
+    sounds[color].play();
+  }
 }
-function levelup(){
-    userSeq=[];
-    level++;
-    h2.innerText=`Level ${level }`;
-    let randIdx =Math.floor(Math.random() *4);
-    let randColor=btns[randIdx];
-    let randBtn=document.querySelector(`.${randColor}`);
-    
-    gameSeq.push(randColor)
-    let i=0;
-     const interval = setInterval(() => {
+
+// Flash a button and play sound
+function btnFlash(btn) {
+  const color = btn.id;
+  playSound(color);
+  btn.classList.add("flash");
+  setTimeout(() => btn.classList.remove("flash"), 250);
+}
+
+// Start the game
+function startGame() {
+  if (!started) {
+    started = true;
+    level = 0;
+    gameSeq = [];
+    userSeq = [];
+    levelup();
+  }
+}
+
+// Go to next level
+function levelup() {
+  userSeq = [];
+  level++;
+  h2.innerText = `Level ${level}`;
+
+  // Add a new random color
+  const randIdx = Math.floor(Math.random() * 4);
+  const randColor = btns[randIdx];
+  gameSeq.push(randColor);
+
+  // Flash entire sequence
+  let i = 0;
+  const interval = setInterval(() => {
     const color = gameSeq[i];
     const btn = document.getElementById(color);
     btnFlash(btn);
     i++;
-    if (i >= gameSeq.length) {
-      clearInterval(interval);
+    if (i >= gameSeq.length) clearInterval(interval);
+  }, 700);
+}
+
+// Check user answer
+function checkAns(idx) {
+  if (userSeq[idx] === gameSeq[idx]) {
+    if (userSeq.length === gameSeq.length) {
+      setTimeout(levelup, 1000);
     }
-  }, 350); // 350ms between flashes (adjust as needed)
-
-   
- function btnFlash(btn) {
-  btn.classList.add("flash");
-  setTimeout(() => btn.classList.remove("flash"), 250);
-}
-    
-    
-}
-function checkAns(idx){
-
-if(userSeq[idx]===gameSeq[idx]){
-    if(userSeq.length==gameSeq.length){
-     setTimeout(levelup,1000); 
-     
-    }
-}else{
-    h2.innerHTML=`Game Over!<br>Your score was level <b>${level} </b> <br>Reload Page to Play again the Game.`
-document.querySelector("body").style.backgroundColor="red";
-setTimeout(function(){
-document.querySelector("body").style.backgroundColor="white";
-},200);
-}
-}
-function btnPress(){
-
-let btn=this;
-btnFlash(btn);
-userColor=btn.getAttribute("id");
-userSeq.push(userColor);
-checkAns(userSeq.length-1);
-}
-let allBtns=document.querySelectorAll(".btn");
-for(btn of allBtns){
-    btn.addEventListener("click",btnPress);
-}
-function reset(){
-    started=false;
-    gameSeq=[];
-    userSeq=[];
-    level=0;
-}
-let lastTouch = 0;
-
-document.addEventListener('touchstart', function (e) {
-  const now = new Date().getTime();
-  if (now - lastTouch <= 300) {
-    e.preventDefault(); // prevent double-tap zoom
+  } else {
+    // Game over
+    playSound("wrong");
+    h2.innerHTML = `Game Over!<br>Your Score Level: <b>${level}</b><br> Press White area on screen to start Again`;
+    document.body.classList.add("game-over");
+    setTimeout(() => {
+      document.body.classList.remove("game-over");
+    }, 300);
+    started = false;
   }
-  lastTouch = now;
-}, { passive: false });
+}
+
+// Handle button press
+function btnPress() {
+  if (!started) return;
+
+  const btn = this;
+  const color = btn.id;
+  userSeq.push(color);
+  btnFlash(btn);
+  checkAns(userSeq.length - 1);
+}
+
+// Add click listeners to buttons
+const allBtns = document.querySelectorAll(".btn");
+for (let btn of allBtns) {
+  btn.addEventListener("click", btnPress);
+}
+
+// Start game on any key, mouse, or touch input (except modal/instruction button)
+function handleStartInput(e) {
+  // Prevent clicks on links or modals from starting the game
+  if (
+    e.target.closest(".start-btn") ||
+    e.target.closest("#howBtn") ||
+    e.target.closest(".modal")
+  ) return;
+
+  startGame();
+}
+
+document.addEventListener("keydown", handleStartInput);
+document.addEventListener("mousedown", handleStartInput);
+document.addEventListener("touchstart", handleStartInput);
