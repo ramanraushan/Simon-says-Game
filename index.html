@@ -4,24 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Simon Says Game</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Simon Says - Instructions</title>
+  <link rel="stylesheet" href="game.css" />
 </head>
 <body>
-  <h1>Simon Says Game</h1>
-  <h2>Press any key to start the Game</h2>
+  <div class="instructions-container">
+    <h1>Simon Says Game</h1>
+    <h2>How to Play</h2>
 
-  <div class="btn-container">
-    <div class="line">
-      <div class="btn red" id="red">1</div>
-      <div class="btn green" id="green">2</div>
-    </div>
-    <div class="line">
-      <div class="btn yellow" id="yellow">3</div>
-      <div class="btn blue" id="blue">4</div>
-    </div>
+    <ul class="instructions">
+      <li>🎯 Press "Start Game" to begin.</li>
+      <li>👀 Watch the flashing color sequence.</li>
+      <li>🧠 Repeat the sequence by clicking the same color buttons.</li>
+      <li>✅ Each level adds one new color to the sequence.</li>
+      <li>❌ If you press the wrong button, the game ends.</li>
+      <li>🔁 Reload page to restart after Game Over.</li>
+    </ul>
+    
+    
+    <a href="game.html" class="start-btn">Start Game</a>
   </div>
-
-  <script src="app.js"></script>
 </body>
 </html>
+
+
+
